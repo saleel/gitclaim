@@ -5,21 +5,8 @@ function Header() {
   return (
     <header className="navbar">
       <div className="logo">
-        <Link href="/">StealthNote</Link>
+        GitClaim
       </div>
-      <nav>
-        <Link href="/how-it-works" className="nav-link">
-          How It Works
-        </Link>
-        <a
-          className="nav-link"
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/saleel/stealthnote"
-        >
-          Github
-        </a>
-      </nav>
     </header>
   );
 }

@@ -579,18 +579,18 @@
   resolved "https://registry.yarnpkg.com/@noir-lang/acvm_js/-/acvm_js-0.50.0.tgz#b423998340b7422e6da94e750516a36cee4f0cba"
   integrity sha512-tmD3eZ8GbkkD001S/YVIrp91sy+XW1ZeVRObio1WgvX9081kJS1xptBglMO4ITzdHOLLuIeaChlUhCgNtwFB9Q==
 
-"@noir-lang/acvm_js@0.50.0-6440e18.nightly":
-  version "0.50.0-6440e18.nightly"
-  resolved "https://registry.yarnpkg.com/@noir-lang/acvm_js/-/acvm_js-0.50.0-6440e18.nightly.tgz#2ba9e197674ee98c77ff698bdb34e09dc2348c3e"
-  integrity sha512-U2glLudRPga4xcFW1ffKaBTrfIb8qdc9ufsGtfNFvvZK+aXd8WuXJpy41fh8pq9M6gx7JYLCVBvaKn3bbbi0Rw==
+"@noir-lang/acvm_js@0.51.0-999071b.nightly":
+  version "0.51.0-999071b.nightly"
+  resolved "https://registry.yarnpkg.com/@noir-lang/acvm_js/-/acvm_js-0.51.0-999071b.nightly.tgz#39be9eb84842972e0e53670d84e3c629923a3d08"
+  integrity sha512-NRQDxodNAUfUBbMyG8QHGo9dgnpSyAajIHLmxHbyjmqUwro2Z4OlrDifbTTPxuXTucFVfh1rX3/+Omn/vOzPTA==
 
-"@noir-lang/backend_barretenberg@0.34.0-6440e18.nightly":
-  version "0.34.0-6440e18.nightly"
-  resolved "https://registry.yarnpkg.com/@noir-lang/backend_barretenberg/-/backend_barretenberg-0.34.0-6440e18.nightly.tgz#8e286b3a975764c397b02d72fa6e122533a909ec"
-  integrity sha512-L3YZ1TJPX1IxRlanddSN2zzy/YHiX1vzRSvolL03Bn1zNBfgTuQRUg3hCGxcymo9xzQCYrQ2KGsZ4zXehONaOg==
+"@noir-lang/backend_barretenberg@0.35.0-999071b.nightly":
+  version "0.35.0-999071b.nightly"
+  resolved "https://registry.yarnpkg.com/@noir-lang/backend_barretenberg/-/backend_barretenberg-0.35.0-999071b.nightly.tgz#1562e65ae0ab77fd60c7f8c5898960f094d3b897"
+  integrity sha512-nyTeLM58CCHrvLFdyz36yY9MiUDf0Fwag9ZZhXe03k15OX1KAPeG5H+cWVHMSqojZ+1GjQIonkJX6N6pmthZQA==
   dependencies:
     "@aztec/bb.js" "0.56.0"
-    "@noir-lang/types" "0.34.0-6440e18.nightly"
+    "@noir-lang/types" "0.35.0-999071b.nightly"
     fflate "^0.8.0"
 
 "@noir-lang/backend_barretenberg@=0.34.0":
@@ -602,14 +602,14 @@
     "@noir-lang/types" "0.34.0"
     fflate "^0.8.0"
 
-"@noir-lang/noir_js@0.34.0-6440e18.nightly":
-  version "0.34.0-6440e18.nightly"
-  resolved "https://registry.yarnpkg.com/@noir-lang/noir_js/-/noir_js-0.34.0-6440e18.nightly.tgz#29de05434e2d2de9e5473117309383f7d9e059f2"
-  integrity sha512-aa24ucdVqvPr/6EzlIEmA4F5QwO6VKeX8lgPiLC6nO3kdkJ55fXemSsNrgEczOPa+7SeYz0lbd6ltQbWJzup5A==
+"@noir-lang/noir_js@0.35.0-999071b.nightly":
+  version "0.35.0-999071b.nightly"
+  resolved "https://registry.yarnpkg.com/@noir-lang/noir_js/-/noir_js-0.35.0-999071b.nightly.tgz#d64c272c3239a08896a87d117b423ed5908a4f99"
+  integrity sha512-H5Fh+9CPUynsItoSqrjL3XHJK/6Q2TuUBNOrZ7F8JwbX98wHR1g6FZ/La4M+nsmVEQScoCNw9SVFwptgy2LW1A==
   dependencies:
-    "@noir-lang/acvm_js" "0.50.0-6440e18.nightly"
-    "@noir-lang/noirc_abi" "0.34.0-6440e18.nightly"
-    "@noir-lang/types" "0.34.0-6440e18.nightly"
+    "@noir-lang/acvm_js" "0.51.0-999071b.nightly"
+    "@noir-lang/noirc_abi" "0.35.0-999071b.nightly"
+    "@noir-lang/types" "0.35.0-999071b.nightly"
 
 "@noir-lang/noir_js@=0.34.0":
   version "0.34.0"
@@ -627,12 +627,12 @@
   dependencies:
     "@noir-lang/types" "0.34.0"
 
-"@noir-lang/noirc_abi@0.34.0-6440e18.nightly":
-  version "0.34.0-6440e18.nightly"
-  resolved "https://registry.yarnpkg.com/@noir-lang/noirc_abi/-/noirc_abi-0.34.0-6440e18.nightly.tgz#2ee2653455e961836168f5c28bb75e1da9b3eb8f"
-  integrity sha512-cBqA9EioR6rcvv2np4QndUY2XGkLXakuJQZo0SYtCO8tTu8jhxL7eXNMfzPov9T9Tt3FrqZQtBB1w5gGJ1tzaw==
+"@noir-lang/noirc_abi@0.35.0-999071b.nightly":
+  version "0.35.0-999071b.nightly"
+  resolved "https://registry.yarnpkg.com/@noir-lang/noirc_abi/-/noirc_abi-0.35.0-999071b.nightly.tgz#cf8147bc64a8a29a6b9d1797efa75f863d7f85a3"
+  integrity sha512-ZoKmufxEMZ+1r1D7L26PTTShiuWWh7jVJrbR2BkHcp4/+5UGdgS73FnjlSXNFdi7pLvwrlDvxkbeHK5P29l5Iw==
   dependencies:
-    "@noir-lang/types" "0.34.0-6440e18.nightly"
+    "@noir-lang/types" "0.35.0-999071b.nightly"
 
 "@noir-lang/noirc_abi@^0.35.0":
   version "0.35.0"
@@ -646,15 +646,15 @@
   resolved "https://registry.yarnpkg.com/@noir-lang/types/-/types-0.34.0.tgz#909d4a170177c7ab5adfeed5dc8660d69825ced2"
   integrity sha512-04A14JMPt5G6/cCD4n59W0DUtAbcN8YByvSJ6gj0VQramd11tWK3ZqhKadnQrzhA0GwEvROd6jvn/blKdHlSXQ==
 
-"@noir-lang/types@0.34.0-6440e18.nightly":
-  version "0.34.0-6440e18.nightly"
-  resolved "https://registry.yarnpkg.com/@noir-lang/types/-/types-0.34.0-6440e18.nightly.tgz#8d6f2c06f8f82a3a0f33b55f2f6f396abc19b6d0"
-  integrity sha512-t6qG0PvHgmKsDWCJGFEC3hxTaxOIdxrFY/vx741MUaE+MEZxM9h855TnYDkqWsfG3oAWfuElKj4RBdJdWqmSlQ==
-
 "@noir-lang/types@0.35.0":
   version "0.35.0"
   resolved "https://registry.yarnpkg.com/@noir-lang/types/-/types-0.35.0.tgz#47e73db1c545b0a68a7b1c4d551843ed71e47291"
   integrity sha512-m4zzTuWVeYI/lgAKU4XwS61lfU/vr8laal8mLm2YEym8GTyVfezjjVrzQd0/mOZtpZ6hO7r3rbd3W2Vs9IkMrg==
+
+"@noir-lang/types@0.35.0-999071b.nightly":
+  version "0.35.0-999071b.nightly"
+  resolved "https://registry.yarnpkg.com/@noir-lang/types/-/types-0.35.0-999071b.nightly.tgz#8564a2c10df950a15d42725851774a455ce189a9"
+  integrity sha512-plMFgxkYkV/LcgUhGAM5ctXkxjsbLT6fPWdkWl6H+3hCzISFA3HIFNWpUUpHQ/Thb9KIfjqHO/oB5AMjWc+arA==
 
 "@nolyfill/is-core-module@1.0.39":
   version "1.0.39"
@@ -1034,10 +1034,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zk-email/helpers@=6.1.5":
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/@zk-email/helpers/-/helpers-6.1.5.tgz#f777f5cd9b96a55fa18e8520e104d4ef84a3d5b0"
-  integrity sha512-DaUQPdQKxI38QOIuce88kiEoQHZ/bEej34wUofmGqB0XlXVky1oFvvmF2MjJdDjuNScSL86QVR2WP06IIaLeJg==
+"@zk-email/helpers@6.1.6", "@zk-email/helpers@=6.1.5":
+  version "6.1.6"
+  resolved "https://registry.yarnpkg.com/@zk-email/helpers/-/helpers-6.1.6.tgz#5cb06a8973ebe6bb31ece2f0bfb175fe8bdc62f8"
+  integrity sha512-qR8ZN+iebIa8Rm03nJFfSRhZgmaltaoNaBgquMzkWsXIUzFOCN/96qbkdVo7C5FztZ2tIlJs56k1cXKlL6+VYA==
   dependencies:
     addressparser "^1.0.1"
     atob "^2.1.2"

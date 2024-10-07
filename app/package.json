@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@mach-34/zkemail-nr": "^1.1.0",
-    "@noir-lang/backend_barretenberg": "0.34.0-6440e18.nightly",
-    "@noir-lang/noir_js": "0.34.0-6440e18.nightly",
+    "@noir-lang/backend_barretenberg": "0.35.0-999071b.nightly",
+    "@noir-lang/noir_js": "0.35.0-999071b.nightly",
     "@supabase/supabase-js": "^2.45.4",
     "bulma": "^1.0.2",
     "cal-sans": "^1.0.1",
@@ -22,6 +22,9 @@
     "react-dom": "^18",
     "react-dropzone": "^14.2.9",
     "sass": "^1.78.0"
+  },
+  "resolutions": {
+    "@zk-email/helpers": "6.1.6"
   },
   "devDependencies": {
     "@types/node": "^20",
