@@ -42,7 +42,10 @@ export default function Home() {
   async function onGenerateProofClick() {
     setIsGeneratingProof(true);
     try {
-      const { proof, provingTime } = await generateProof(emailContent, walletAddress);
+      const { proof, provingTime } = await generateProof(
+        emailContent,
+        walletAddress
+      );
       setProof(proof);
       console.log("Proof generated in", provingTime, "ms");
     } catch (error) {
@@ -72,21 +75,36 @@ export default function Home() {
     <section ref={emailSectionRef} className="section">
       <h2 className="section-title">Welcome to GitClaim</h2>
       <p>
-        GitClaim is a tool that allows you to claim airdrops by proving that you
-        have contributed to an eligible Github repository.
+        GitClaim is a tool for claiming airdrops by proving that you have
+        contributed to an eligible Github repository.
       </p>
       <p>
-        It works by parsing a notification email that Github sends when a PR is
+        It works by parsing notification emails that Github sends when a PR is
         merged.
         <p></p>
-        We use ZK Email to prove you have a matching email without revealing the
-        contents of the email. This way, your wallet address will not be linked
-        to your Github account.
+        We use{" "}
+        <a
+          href="https://github.com/zkemail/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ZK Email
+        </a>{" "}
+        to prove you have a matching email without revealing the full contents
+        of the email. This way, your wallet address will not be linked to your
+        Github account.
       </p>
       <p>
         To get started, upload a PR merge notification email that Github sends
         to you. You can download emails as .eml files from most email clients
-        including Gmail.
+        <a
+          href="https://support.google.com/mail/answer/9261412"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          including Gmail
+        </a>
+        .
       </p>
       <div className="dropzone" {...getRootProps()}>
         <input {...getInputProps()} />
@@ -110,7 +128,7 @@ export default function Home() {
       <h2 className="section-title">Email Details</h2>
       <p>Repository: {emailDetails?.repoName}</p>
       <p>Pull Request: {emailDetails?.prUrl}</p>
-      
+
       <div className="wallet-input">
         <label htmlFor="walletAddress">Wallet Address:</label>
         <input
@@ -122,7 +140,7 @@ export default function Home() {
           placeholder="Enter your wallet address"
         />
       </div>
-      
+
       <button
         className={`generate-proof-button ${
           isGeneratingProof ? "generating" : ""
