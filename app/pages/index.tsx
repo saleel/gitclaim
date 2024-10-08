@@ -12,8 +12,11 @@ export default function Home() {
     prUrl: string;
   } | null>(null);
   const [proof, setProof] = useState<Uint8Array | null>(null);
+  const [publicInputs, setPublicInputs] = useState<string[] | null>(null);
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
+  const [walletAddress, setWalletAddress] = useState("0xab");
+  const [provingTime, setProvingTime] = useState(0);
+  const [claimStatus, setClaimStatus] = useState<string | null>(null);
 
   const emailSectionRef = useRef<HTMLDivElement>(null);
   const detailsSectionRef = useRef<HTMLDivElement>(null);
@@ -42,11 +45,13 @@ export default function Home() {
   async function onGenerateProofClick() {
     setIsGeneratingProof(true);
     try {
-      const { proof, provingTime } = await generateProof(
+      const { proof, publicInputs, provingTime } = await generateProof(
         emailContent,
         walletAddress
       );
       setProof(proof);
+      setPublicInputs(publicInputs);
+      setProvingTime(provingTime);
       console.log("Proof generated in", provingTime, "ms");
     } catch (error) {
       console.error("Error generating proof:", error);
@@ -55,8 +60,31 @@ export default function Home() {
     }
   }
 
-  function onClaimDiscount() {
-    console.log("Claiming discount with proof:", proof);
+  async function onClaimDiscount() {
+    try {
+      setClaimStatus("Claiming airdrop...");
+      const response = await fetch("/api/claim-airdrop", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          proof: Array.from(proof!),
+          publicInputs,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setClaimStatus("Airdrop claimed successfully!");
+      } else {
+        setClaimStatus(`Failed to claim airdrop: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error claiming airdrop:", error);
+      setClaimStatus("An error occurred while claiming the airdrop.");
+    }
   }
 
   useEffect(() => {
@@ -80,9 +108,7 @@ export default function Home() {
       </p>
       <p>
         It works by parsing notification emails that Github sends when a PR is
-        merged.
-        <p></p>
-        We use{" "}
+        merged. We use{" "}
         <a
           href="https://github.com/zkemail/"
           target="_blank"
@@ -96,7 +122,7 @@ export default function Home() {
       </p>
       <p>
         To get started, upload a PR merge notification email that Github sends
-        to you. You can download emails as .eml files from most email clients
+        to you. You can download emails as .eml files from most email clients{" "}
         <a
           href="https://support.google.com/mail/answer/9261412"
           target="_blank"
@@ -126,25 +152,33 @@ export default function Home() {
   const renderDetailsSection = () => (
     <section ref={detailsSectionRef} className="section">
       <h2 className="section-title">Email Details</h2>
-      <p>Repository: {emailDetails?.repoName}</p>
-      <p>Pull Request: {emailDetails?.prUrl}</p>
 
-      <div className="wallet-input">
-        <label htmlFor="walletAddress">Wallet Address:</label>
+      <p className="info-block">
+        <span className="label">Repository:</span>
+        <span className="value">{emailDetails?.repoName}</span>
+      </p>
+      <p className="info-block">
+        <span className="label">Pull Request:</span>
+        <span className="value">{emailDetails?.prUrl}</span>
+      </p>
+
+      <div className="info-block">
+        <label className="label" htmlFor="walletAddress">
+          Wallet Address:
+        </label>
         <input
           type="text"
-          className="section-input"
+          className="value section-input"
           id="walletAddress"
           value={walletAddress}
           onChange={(e) => setWalletAddress(e.target.value)}
+          maxLength={42}
           placeholder="Enter your wallet address"
         />
       </div>
 
       <button
-        className={`generate-proof-button ${
-          isGeneratingProof ? "generating" : ""
-        }`}
+        className={`section-button ${isGeneratingProof ? "generating" : ""}`}
         onClick={onGenerateProofClick}
         disabled={isGeneratingProof || !walletAddress}
       >
@@ -159,7 +193,7 @@ export default function Home() {
       </button>
       {isGeneratingProof && (
         <p className="info-message">
-          Proof is being generated. This may take a few minutes...
+          Proof is being generated. This will take about one minute...
         </p>
       )}
     </section>
@@ -168,9 +202,42 @@ export default function Home() {
   const renderProofSection = () => (
     <section ref={proofSectionRef} className="section">
       <h2 className="section-title">Proof Generated</h2>
-      <button className="claim-discount-button" onClick={onClaimDiscount}>
-        Claim Discount
+      <p>Proof generated in {provingTime} ms</p>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <div className="proof-block">
+          <p>Proof</p>
+          <textarea
+            value={Array.from(proof!).join(",")}
+            readOnly
+            className="section-input"
+          />
+        </div>
+        <div className="proof-block">
+          <p>Public Inputs</p>
+          <textarea
+            value={publicInputs?.join("\n")}
+            readOnly
+            className="section-input"
+          />
+        </div>
+      </div>
+
+      <button
+        disabled={!(claimStatus?.includes("Failed") || claimStatus?.includes("error"))}
+        className="section-button"
+        onClick={onClaimDiscount}
+      >
+        Claim Airdrop
       </button>
+
+      <p className={`info-message`}>{claimStatus}</p>
     </section>
   );
 

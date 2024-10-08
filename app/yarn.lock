@@ -2,20 +2,9 @@
 # yarn lockfile v1
 
 
-"@aztec/bb.js@0.55.0":
-  version "0.55.0"
-  resolved "https://registry.yarnpkg.com/@aztec/bb.js/-/bb.js-0.55.0.tgz#86788670170f2437c049419d2e1c58a51eb56e49"
-  integrity sha512-hdSn5qba/OVyDAPuNBxpF+nFodcv+lK16YPIqkgaaNJ/6hURSLXClbkfnXNg7egwmnvrBQrJb5dVuaoydm8y6w==
-  dependencies:
-    comlink "^4.4.1"
-    commander "^10.0.1"
-    debug "^4.3.4"
-    tslib "^2.4.0"
-
-"@aztec/bb.js@0.56.0":
+"@aztec/bb.js@0.55.0", "@aztec/bb.js@0.56.0", "@aztec/bb.js@https://gitpkg.vercel.app/saleel/aztec-packages/barretenberg/ts?master":
   version "0.56.0"
-  resolved "https://registry.yarnpkg.com/@aztec/bb.js/-/bb.js-0.56.0.tgz#c1946f7fb23d6c3f2f2b8d6af1b1a3c1ea290122"
-  integrity sha512-NRuIH9kub99o7Ddx4wLIW1x0Ow0hemP036fL9vBhqTBeNGi6BusMlSVygrUPKAjQrVGihJJPqdndwblypZY2ew==
+  resolved "https://gitpkg.vercel.app/saleel/aztec-packages/barretenberg/ts?master#7ac6b16d23ee2eef821ceedce1f70666ac4ae13e"
   dependencies:
     comlink "^4.4.1"
     commander "^10.0.1"

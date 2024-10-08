@@ -1,5 +1,5 @@
 [package]
-name = "github"
+name = "gitclaim"
 type = "bin"
 authors = ["saleel"]
 compiler_version = ">=0.34.0"

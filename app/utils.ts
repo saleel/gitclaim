@@ -48,6 +48,8 @@ export async function initVerifier(): Promise<VerifierModules> {
 
 export async function generateProof(emailContent: string, walletAddress: string) {
   try {
+    const walletAddressField = BigInt(walletAddress).toString();
+
     const zkEmailInputs = await generateEmailVerifierInputs(emailContent, {
       maxBodyLength: 8000,
       maxHeadersLength: 1280,
@@ -64,6 +66,7 @@ export async function generateProof(emailContent: string, walletAddress: string)
       ...zkEmailInputs,
       pull_request_url: Array.from(prUrlPadded).map((s) => s.toString()),
       pull_request_url_length: emailDetails.prUrl.length,
+      wallet_address: walletAddressField,
     };
     console.log("Generating proof with inputs:", inputs);
 
@@ -80,7 +83,7 @@ export async function generateProof(emailContent: string, walletAddress: string)
     const provingTime = performance.now() - startTime;
 
 
-    return { proof: proofResult.proof, provingTime };
+    return { ...proofResult, provingTime };
   } catch (error) {
     console.error("Error generating proof:", error);
     throw new Error("Failed to generate proof");
@@ -100,4 +103,20 @@ export function parseEmail(emlContent: string) {
     prUrl,
     repoName,
   };
+}
+
+export async function verifyProof(proof: Uint8Array, publicInputs: string[]): Promise<boolean> {
+  await initVerifier();
+ 
+  const { UltraHonkVerifier, vkey } = await initVerifier();
+
+  const proofData = {
+    proof: proof,
+    publicInputs,
+  };
+
+  const verifier = new UltraHonkVerifier({ crsPath: process.env.TEMP_DIR });
+  const result = await verifier.verifyProof(proofData, Uint8Array.from(vkey));
+
+  return result;
 }

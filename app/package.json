@@ -24,7 +24,8 @@
     "sass": "^1.78.0"
   },
   "resolutions": {
-    "@zk-email/helpers": "6.1.6"
+    "@zk-email/helpers": "6.1.6",
+    "@aztec/bb.js": "https://gitpkg.vercel.app/saleel/aztec-packages/barretenberg/ts?master"
   },
   "devDependencies": {
     "@types/node": "^20",

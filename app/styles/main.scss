@@ -13,7 +13,7 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  height: calc(100vh - 50px);
+  min-height: calc(100vh - 50px);
   padding: 1rem;
 }
 
@@ -82,21 +82,16 @@ p {
   }
 }
 
-.error-message {
-  margin-top: 1rem;
-  color: #dc2626;
-}
-
-.generate-proof-button {
+.section-button {
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 1rem 2rem;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin-top: 2rem;
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.3s;
@@ -118,10 +113,48 @@ p {
 }
 
 .info-message {
-  margin-top: 10px;
-  font-style: italic;
-  color: #666;
+  margin-top: 1rem;
 }
+
+.error-message {
+  margin-top: 1rem;
+  color: #dc2626;
+}
+
+.info-block {
+  height: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .label {
+    color: #666;
+    min-width: 200px;
+  }
+
+  .value {
+    color: #000;
+  }
+}
+
+.proof-block {
+  width: 48%;
+
+  p {
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  textarea, code, pre {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    overflow-y: auto;
+    height: 10rem;
+  }
+}
+
+
+// Animations
 
 .spinner {
   border: 4px solid rgba(255, 255, 255, 0.3);
@@ -140,5 +173,22 @@ p {
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+.claim-status {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+
+  &.success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  &.error {
+    background-color: #f8d7da;
+    color: #721c24;
   }
 }
