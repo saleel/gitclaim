@@ -104,11 +104,22 @@ export async function generateProof(
       Uint8Array.from(new TextEncoder().encode(emailDetails.ccEmail))
     );
 
+    // Partial body padded
+    const partialBodyPadded = new Array(1280).fill(0);
+    for (let i = 0; i < zkEmailInputs.body!.length; i++) {
+      partialBodyPadded[i] = zkEmailInputs.body![i];
+    }
+
+    const headerPadded = new Array(1408).fill(0);
+    for (let i = 0; i < zkEmailInputs.header.length; i++) {
+      headerPadded[i] = zkEmailInputs.header[i];
+    }
+
     const inputs = {
       ...zkEmailInputs,
-      header: zkEmailInputs.header,
+      header: headerPadded,
       header_length: zkEmailInputs.header_length,
-      partial_body: zkEmailInputs.body,
+      partial_body: Array.from(partialBodyPadded).map((s) => s.toString()),
       partial_body_length: zkEmailInputs.partial_body_length,
       full_body_length: zkEmailInputs.body_length,
       partial_body_hash: zkEmailInputs.partial_body_hash,

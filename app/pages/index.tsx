@@ -14,7 +14,6 @@ export default function Home() {
   const [walletAddress, setWalletAddress] = useState("0xab");
   const [provingTime, setProvingTime] = useState(0);
   const [claimStatus, setClaimStatus] = useState<string | null>(null);
-  const [isEligible, setIsEligible] = useState<boolean | null>(null);
 
   const emailSectionRef = useRef<HTMLDivElement>(null);
   const detailsSectionRef = useRef<HTMLDivElement>(null);
@@ -26,13 +25,16 @@ export default function Home() {
     reader.onload = (event) => {
       const content = event.target?.result as string;
       setEmailContent(content);
+      
+      // Reset all states
+      setClaimStatus(null);
+      setProof(null);
+      setPublicInputs(null);
+      setProvingTime(0);
+      setIsGeneratingProof(false);
+
       const parsedEmail = parseEmail(content);
       setEmailDetails(parsedEmail);
-      if (parsedEmail?.repoName) {
-        setIsEligible(isEligibleRepo(parsedEmail.repoName));
-      } else {
-        setIsEligible(null);
-      }
     };
     reader.readAsText(file);
   }, []);
@@ -151,6 +153,7 @@ export default function Home() {
     </section>
   );
 
+  const isEligible = emailDetails && isEligibleRepo(emailDetails.repoName);
   const renderDetailsSection = () => (
     <section ref={detailsSectionRef} className="section">
       <h2 className="section-title">Email Details</h2>
