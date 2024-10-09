@@ -1,8 +1,8 @@
 # GitClaim
 
-A sample app on top of [zkemail.nr](https://github.com/zkemail/zkemail.nr/) to claim airdrops by proving Github contributions to eligible repos.
+A sample app on top of [zkemail.nr](https://github.com/zkemail/zkemail.nr/) to claim airdrops by proving Github contributions to eligible repos using PR merge notification emails.
 
-This is only a sample where you prove your contribution to a repository using PR merge notification email from Github and claim an aidrop. This is meant to be a learning app, or a starting point for building ZK Email apps in Noir.
+This is only meant to be a learning app, or a starting point for building ZK Email apps in Noir. 
 
 
 ## Try it out
@@ -109,5 +109,7 @@ To learn more, read the circuit code in [main.nr](./circuit/src/main.nr) and inp
 
 - We rely on some hacks in the email to validate if the email is a PR merge notification email. This might not be fool-proof.
 - You receive a merge notification only if the merge was made by someone else. For some repos (mostly internal teams), you might be merging the PR yourself once its approved by someone.
+- We dont check if the PR is merged to master/main
+- Since the nullifier is hash of the email adddress, it is possible to do a brute force / dictionary attack to find out the email address that has a given nullifier.
 
 This is only intended to be a sample app, mainly to explain the strategies around idetifying emails by looking for unique elements, and potentially finding them towards the end of the body to do SHA precompute, and to explain the concept of nullifiers.

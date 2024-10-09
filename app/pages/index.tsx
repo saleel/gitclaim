@@ -212,6 +212,11 @@ export default function Home() {
           Proof is being generated. This will take about a minute...
         </p>
       )}
+      {proof && provingTime && (
+        <p className="info-message">
+          Proof generated in {provingTime / 1000} seconds
+        </p>
+      )}
     </section>
   );
 
