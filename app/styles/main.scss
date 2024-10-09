@@ -135,6 +135,12 @@ p {
   .value {
     color: #000;
   }
+
+  &.error {
+    .value {
+      color: #dc2626;
+    }
+  }
 }
 
 .proof-block {

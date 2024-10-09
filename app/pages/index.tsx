@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import Head from "next/head";
 import { useDropzone } from "react-dropzone";
-import { generateProof, parseEmail } from "../utils";
+import { generateProof, parseEmail, isEligibleRepo } from "../utils";
 
 export default function Home() {
   const [emailContent, setEmailContent] = useState("");
@@ -14,6 +14,7 @@ export default function Home() {
   const [walletAddress, setWalletAddress] = useState("0xab");
   const [provingTime, setProvingTime] = useState(0);
   const [claimStatus, setClaimStatus] = useState<string | null>(null);
+  const [isEligible, setIsEligible] = useState<boolean | null>(null);
 
   const emailSectionRef = useRef<HTMLDivElement>(null);
   const detailsSectionRef = useRef<HTMLDivElement>(null);
@@ -25,7 +26,13 @@ export default function Home() {
     reader.onload = (event) => {
       const content = event.target?.result as string;
       setEmailContent(content);
-      setEmailDetails(parseEmail(content));
+      const parsedEmail = parseEmail(content);
+      setEmailDetails(parsedEmail);
+      if (parsedEmail?.repoName) {
+        setIsEligible(isEligibleRepo(parsedEmail.repoName));
+      } else {
+        setIsEligible(null);
+      }
     };
     reader.readAsText(file);
   }, []);
@@ -160,6 +167,12 @@ export default function Home() {
         <span className="label">Email (private):</span>
         <span className="value">{emailDetails?.ccEmail}</span>
       </p>
+      {isEligible !== null && (
+        <p className={`info-block ${isEligible ? '' : 'error'}`}>
+          <span className="label">Eligibility:</span>
+          <span className="value">{isEligible ? 'Eligible' : 'Not Eligible'}</span>
+        </p>
+      )}
 
       <div className="info-block">
         <label className="label" htmlFor="walletAddress">
@@ -180,7 +193,7 @@ export default function Home() {
       <button
         className={`section-button ${isGeneratingProof ? "generating" : ""}`}
         onClick={onGenerateProofClick}
-        disabled={isGeneratingProof || !walletAddress || !!(proof && publicInputs)}
+        disabled={isGeneratingProof || !isEligible || !walletAddress || !!(proof && publicInputs)}
       >
         {isGeneratingProof ? (
           <>

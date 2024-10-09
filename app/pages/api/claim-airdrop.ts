@@ -1,12 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { verifyProof } from '../../utils';
+import { isEligibleRepo, verifyProof } from '../../utils';
 
 type ResponseData = {
   success: boolean;
   message: string;
 };
 
-// In-memory storage for nullifiers (replace with a database in production)
+// WARNING!
+// In-memory storage for nullifiers
+// This will be reset during every server restart
+// Replace with a database for actual use
 const usedNullifiers = new Set<string>();
 
 export default async function handler(
@@ -30,8 +33,17 @@ export default async function handler(
       return res.status(400).json({ success: false, message: 'Invalid proof' });
     }
 
+    // Construct the repo URL string from the first 50 bytes of publicInputs
+    const repoUrlBytes = publicInputs.slice(0, 50);
+    const repoUrl = repoUrlBytes.map((byte: number) => String.fromCharCode(byte)).join('').trim();
+
+    // Check if the repo is eligible
+    if (!isEligibleRepo(repoUrl)) { 
+      return res.status(403).json({ success: false, message: 'Repository is not eligible for the airdrop' });
+    }
+
     // Extract nullifier from public inputs
-    const nullifier = publicInputs[0];
+    const nullifier = publicInputs[50];
 
     // Check if nullifier has been used before
     if (usedNullifiers.has(nullifier)) {

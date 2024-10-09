@@ -19,7 +19,7 @@ type VerifierModules = {
 let proverPromise: Promise<ProverModules> | null = null;
 let verifierPromise: Promise<VerifierModules> | null = null;
 
-// Lazy load prover libs to avoid initial load times
+// Lazy load prover libs to avoid initial page load delay
 export async function initProver(): Promise<ProverModules> {
   if (!proverPromise) {
     proverPromise = (async () => {
@@ -50,17 +50,17 @@ export async function initVerifier(): Promise<VerifierModules> {
 export function parseEmail(emlContent: string) {
   // Extract PR URL - between `"target": "` and `#event-`
   const targetUrlMatch = emlContent.match(/"target": "(.*?)event-/);
-  const targetUrl = targetUrlMatch ? targetUrlMatch[1] : '';
+  const targetUrl = targetUrlMatch ? targetUrlMatch[1] : "";
 
   // Parse repo name from PR URL
   const repoNameMatch = targetUrl.match(/https:\/\/github\.com\/(.*?)\/pull\//);
-  const repoName = repoNameMatch ? repoNameMatch[1] : '';
+  const repoName = repoNameMatch ? repoNameMatch[1] : "";
 
   const prNumberMatch = targetUrl.match(/\/pull\/(.*?)#/);
-  const prNumber = prNumberMatch ? prNumberMatch[1] : '';
+  const prNumber = prNumberMatch ? prNumberMatch[1] : "";
 
   const ccEmailMatch = emlContent.match(/Cc: (.*),/);
-  const ccEmail = ccEmailMatch ? ccEmailMatch[1] : '';
+  const ccEmail = ccEmailMatch ? ccEmailMatch[1] : "";
 
   return {
     repoName,
@@ -69,30 +69,53 @@ export function parseEmail(emlContent: string) {
   };
 }
 
-export async function generateProof(emailContent: string, walletAddress: string) {
+export async function generateProof(
+  emailContent: string,
+  walletAddress: string
+) {
   try {
     const walletAddressField = BigInt(walletAddress).toString();
 
+    // Generate common inputs using ZK Email SDK
     const zkEmailInputs = await generateEmailVerifierInputs(emailContent, {
-      maxBodyLength: 8000,
-      maxHeadersLength: 1280,
-      shaPrecomputeSelector: "you authored the thread.<img",
+      maxBodyLength: 1280, // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
+      maxHeadersLength: 1408, // Same as MAX_EMAIL_HEADER_LENGTH in circuit
+      shaPrecomputeSelector: "you authored the thread.<img", // <img to pick the one in html part
     });
 
     const emailDetails = parseEmail(emailContent);
-  
+
+    // Pad repo name to 50 bytes
     const repoNamePadded = new Uint8Array(50);
-    repoNamePadded.set(Uint8Array.from(new TextEncoder().encode(emailDetails.repoName)));
+    repoNamePadded.set(
+      Uint8Array.from(new TextEncoder().encode(emailDetails.repoName))
+    );
 
+    // Pad pr number to 6 bytes
+    // We need this to compute the "target": url
     const prNumberPadded = new Uint8Array(6);
-    prNumberPadded.set(Uint8Array.from(new TextEncoder().encode(emailDetails.prNumber)));
+    prNumberPadded.set(
+      Uint8Array.from(new TextEncoder().encode(emailDetails.prNumber))
+    );
 
+    // Pad email address to 60 bytes
     const emailAddressPadded = new Uint8Array(60);
-    emailAddressPadded.set(Uint8Array.from(new TextEncoder().encode(emailDetails.ccEmail)));
-  
+    emailAddressPadded.set(
+      Uint8Array.from(new TextEncoder().encode(emailDetails.ccEmail))
+    );
+
     const inputs = {
-      
       ...zkEmailInputs,
+      header: zkEmailInputs.header,
+      header_length: zkEmailInputs.header_length,
+      partial_body: zkEmailInputs.body,
+      partial_body_length: zkEmailInputs.partial_body_length,
+      full_body_length: zkEmailInputs.body_length,
+      partial_body_hash: zkEmailInputs.partial_body_hash,
+      body_hash_index: zkEmailInputs.body_hash_index,
+      pubkey: zkEmailInputs.pubkey,
+      pubkey_redc: zkEmailInputs.pubkey_redc,
+      signature: zkEmailInputs.signature,
       repo_name: Array.from(repoNamePadded).map((s) => s.toString()),
       repo_name_length: emailDetails.repoName.length,
       pr_number: Array.from(prNumberPadded).map((s) => s.toString()),
@@ -115,7 +138,6 @@ export async function generateProof(emailContent: string, walletAddress: string)
     const proofResult = await backend.generateProof(witness);
     const provingTime = performance.now() - startTime;
 
-
     return { ...proofResult, provingTime };
   } catch (error) {
     console.error("Error generating proof:", error);
@@ -123,9 +145,12 @@ export async function generateProof(emailContent: string, walletAddress: string)
   }
 }
 
-export async function verifyProof(proof: Uint8Array, publicInputs: string[]): Promise<boolean> {
+export async function verifyProof(
+  proof: Uint8Array,
+  publicInputs: string[]
+): Promise<boolean> {
   await initVerifier();
- 
+
   const { UltraHonkVerifier, vkey } = await initVerifier();
 
   const proofData = {
@@ -137,4 +162,11 @@ export async function verifyProof(proof: Uint8Array, publicInputs: string[]): Pr
   const result = await verifier.verifyProof(proofData, Uint8Array.from(vkey));
 
   return result;
+}
+
+export function isEligibleRepo(repoName: string): boolean {
+  // This can be updated to check against a list of eligible repos
+  // return repoName.includes("noir-lang") || repoName.includes("AztecProtocol");
+
+  return true;
 }
