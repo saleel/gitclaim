@@ -7,18 +7,43 @@ use zkemail::dkim::verify_dkim_1024;
 use dep::string_search::{SubString, StringBody, SubString32, SubString64, SubString128};
 
 type StringBody1280 = StringBody<1302, 42, 1280>;
+type StringBody1408 = StringBody<1426, 46, 1408>;
 
-global MAX_EMAIL_HEADER_LENGTH: u32 = 1280;
+global MAX_EMAIL_HEADER_LENGTH: u32 = 1408;
 global MAX_PARTIAL_EMAIL_BODY_LENGTH: u32 = 1280;
 
+
+
+
+/**
+ * @brief Total constraints: 361,913
+ *
+ *
+ * @param header: Email headers that are signed by DKIM (sanitized as per DKIM spec); ASCII byte array; padded to max length
+ * @param header_length: Length of the headers
+ * @param partial_body: Email body after up to which SHA precompute is done; ASCII byte array; padded to max length
+ * @param partial_body_length: Length of the partial body
+ * @param full_body_length: Length of the full email body (with partial SHA)
+ * @param partial_body_hash: 256-bit partial hash of the body (u32[8])
+ * @param body_hash_index: Index at which the body hash (`bh=`) is present in the header (u32)
+ * @param pubkey: 1024-bit public key limbs
+ * @param pubkey_redc: 1024-bit public key reduction parameters limbs
+ * @param signature: 1024-bit signature limbs
+ * @param repo_name: Name of the repo; ASCII byte array; padded to max length
+ * @param repo_name_length: Length of the repo name
+ * @param pr_number: PR number; ASCII byte array of numeric characters; padded to max length
+ * @param pr_number_length: Length of the PR number
+ * @param email_address: User's email address; ASCII byte array; padded to max length
+ * @param email_address_length: Length of the email address
+ **/
 fn main(
-    body_hash_index: u32,
     header: [u8; MAX_EMAIL_HEADER_LENGTH],
     header_length: u32,
-    body: [u8; MAX_PARTIAL_EMAIL_BODY_LENGTH],
-    body_length: u32,
-    partial_body_hash: [u32; 8],
+    partial_body: [u8; MAX_PARTIAL_EMAIL_BODY_LENGTH],
     partial_body_length: u32,
+    full_body_length: u32,
+    partial_body_hash: [u32; 8],
+    body_hash_index: u32,
     pubkey: [Field; KEY_LIMBS_1024],
     pubkey_redc: [Field; KEY_LIMBS_1024],
     signature: [Field; KEY_LIMBS_1024],
@@ -45,16 +70,16 @@ fn main(
     // finish the partial hash
     let computed_body_hash = partial_sha256_var_end(
         partial_body_hash,
-        body,
+        partial_body,
         partial_body_length as u64,
-        body_length as u64
+        full_body_length as u64
     );
 
     // check the body hashes match
     assert(signed_body_hash == computed_body_hash, "sha256 hash does not match");
 
     // Construct haystack from body to search for substrings
-    let haystack: StringBody1280 = StringBody::new(body, partial_body_length);
+    let haystack: StringBody1280 = StringBody::new(partial_body, partial_body_length);
 
     // Assert repo name is in the body
     assert_repo_name_in_body(
@@ -100,7 +125,7 @@ fn assert_repo_name_in_body(
     }
 
     // Append repo name
-    for i in 0..32 {
+    for i in 0..50 {
         if (i < repo_name_length) {
             pr_url[url_prefix.len() + i] = repo_name[i];
         }
@@ -147,19 +172,19 @@ fn assert_authored_msg_in_body(haystack: StringBody1280) {
 
 // Email address of the user is present in the cc field
 fn assert_email_address_in_header(
-    header: [u8; 1280],
+    header: [u8; MAX_EMAIL_HEADER_LENGTH],
     header_length: u32,
     email_address: [u8; 60],
     email_address_length: u32
 ) {
     // You will see "Cc: " in the email, but it gets converted to "cc:" during DKIM sanitization
     // Sanitized headers is what is signed by the DKIM key, and what is passed in `header` input
-    let cc_prefix = "\r\ncc:".as_bytes();
+    let cc_prefix = "\ncc:".as_bytes();
     let cc_prefix_substring: SubString32 = SubString::new(cc_prefix, cc_prefix.len());
     let email_addr: SubString64 = SubString::new(email_address, email_address_length);
     let email_needle = cc_prefix_substring.concat_into(email_addr);
 
-    let header_haystack: StringBody1280 = StringBody::new(header, header_length);
+    let header_haystack: StringBody1408 = StringBody::new(header, header_length);
     let (email_found, email_pos): (bool, u32) = header_haystack.substring_match(email_needle);
 
     assert(email_found, "header does not contain email address");
