@@ -86,11 +86,11 @@ p {
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 1rem 2rem;
+  padding: 0.8rem 1.5rem;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 1rem;
   margin-top: 2rem;
   cursor: pointer;
   border-radius: 4px;
@@ -129,7 +129,7 @@ p {
 
   .label {
     color: #666;
-    min-width: 200px;
+    min-width: 220px;
   }
 
   .value {

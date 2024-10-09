@@ -19,6 +19,7 @@ type VerifierModules = {
 let proverPromise: Promise<ProverModules> | null = null;
 let verifierPromise: Promise<VerifierModules> | null = null;
 
+// Lazy load prover libs to avoid initial load times
 export async function initProver(): Promise<ProverModules> {
   if (!proverPromise) {
     proverPromise = (async () => {
@@ -46,6 +47,28 @@ export async function initVerifier(): Promise<VerifierModules> {
   return verifierPromise;
 }
 
+export function parseEmail(emlContent: string) {
+  // Extract PR URL - between `"target": "` and `#event-`
+  const targetUrlMatch = emlContent.match(/"target": "(.*?)event-/);
+  const targetUrl = targetUrlMatch ? targetUrlMatch[1] : '';
+
+  // Parse repo name from PR URL
+  const repoNameMatch = targetUrl.match(/https:\/\/github\.com\/(.*?)\/pull\//);
+  const repoName = repoNameMatch ? repoNameMatch[1] : '';
+
+  const prNumberMatch = targetUrl.match(/\/pull\/(.*?)#/);
+  const prNumber = prNumberMatch ? prNumberMatch[1] : '';
+
+  const ccEmailMatch = emlContent.match(/Cc: (.*),/);
+  const ccEmail = ccEmailMatch ? ccEmailMatch[1] : '';
+
+  return {
+    repoName,
+    prNumber,
+    ccEmail,
+  };
+}
+
 export async function generateProof(emailContent: string, walletAddress: string) {
   try {
     const walletAddressField = BigInt(walletAddress).toString();
@@ -58,14 +81,24 @@ export async function generateProof(emailContent: string, walletAddress: string)
 
     const emailDetails = parseEmail(emailContent);
   
-    // Pad domain to 64 bytes
-    const prUrlPadded = new Uint8Array(64);
-    prUrlPadded.set(Uint8Array.from(new TextEncoder().encode(emailDetails.prUrl)));
+    const repoNamePadded = new Uint8Array(50);
+    repoNamePadded.set(Uint8Array.from(new TextEncoder().encode(emailDetails.repoName)));
+
+    const prNumberPadded = new Uint8Array(6);
+    prNumberPadded.set(Uint8Array.from(new TextEncoder().encode(emailDetails.prNumber)));
+
+    const emailAddressPadded = new Uint8Array(60);
+    emailAddressPadded.set(Uint8Array.from(new TextEncoder().encode(emailDetails.ccEmail)));
   
     const inputs = {
+      
       ...zkEmailInputs,
-      pull_request_url: Array.from(prUrlPadded).map((s) => s.toString()),
-      pull_request_url_length: emailDetails.prUrl.length,
+      repo_name: Array.from(repoNamePadded).map((s) => s.toString()),
+      repo_name_length: emailDetails.repoName.length,
+      pr_number: Array.from(prNumberPadded).map((s) => s.toString()),
+      pr_number_length: emailDetails.prNumber.length,
+      email_address: Array.from(emailAddressPadded).map((s) => s.toString()),
+      email_address_length: emailDetails.ccEmail.length,
       wallet_address: walletAddressField,
     };
     console.log("Generating proof with inputs:", inputs);
@@ -88,21 +121,6 @@ export async function generateProof(emailContent: string, walletAddress: string)
     console.error("Error generating proof:", error);
     throw new Error("Failed to generate proof");
   }
-}
-
-export function parseEmail(emlContent: string) {
-  // Extract PR URL - between `"target": "` and `#event-`
-  const prUrlMatch = emlContent.match(/"target": "(.*?)#event-/);
-  const prUrl = prUrlMatch ? prUrlMatch[1] : '';
-
-  // Parse repo name from PR URL
-  const repoNameMatch = prUrl.match(/github\.com\/([^/]+\/[^/]+)/);
-  const repoName = repoNameMatch ? repoNameMatch[1] : '';
-
-  return {
-    prUrl,
-    repoName,
-  };
 }
 
 export async function verifyProof(proof: Uint8Array, publicInputs: string[]): Promise<boolean> {

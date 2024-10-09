@@ -7,10 +7,7 @@ import { generateProof, parseEmail } from "../utils";
 
 export default function Home() {
   const [emailContent, setEmailContent] = useState("");
-  const [emailDetails, setEmailDetails] = useState<{
-    repoName: string;
-    prUrl: string;
-  } | null>(null);
+  const [emailDetails, setEmailDetails] = useState<ReturnType<typeof parseEmail> | null>(null);
   const [proof, setProof] = useState<Uint8Array | null>(null);
   const [publicInputs, setPublicInputs] = useState<string[] | null>(null);
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
@@ -28,9 +25,7 @@ export default function Home() {
     reader.onload = (event) => {
       const content = event.target?.result as string;
       setEmailContent(content);
-      const details = parseEmail(content);
-      console.log("Email details:", details);
-      setEmailDetails(details);
+      setEmailDetails(parseEmail(content));
     };
     reader.readAsText(file);
   }, []);
@@ -140,7 +135,7 @@ export default function Home() {
           <p>Drag the .eml file here, or click to select a file</p>
         )}
       </div>
-      {emailContent && !emailDetails?.prUrl && (
+      {emailDetails && !emailDetails?.repoName && (
         <p className="error-message">
           Unable to parse the email. Please upload a PR merge notification email
           from Github.
@@ -154,12 +149,16 @@ export default function Home() {
       <h2 className="section-title">Email Details</h2>
 
       <p className="info-block">
-        <span className="label">Repository:</span>
+        <span className="label">Repo name (public):</span>
         <span className="value">{emailDetails?.repoName}</span>
       </p>
       <p className="info-block">
-        <span className="label">Pull Request:</span>
-        <span className="value">{emailDetails?.prUrl}</span>
+        <span className="label">PR Number (private):</span>
+        <span className="value">{emailDetails?.prNumber}</span>
+      </p>
+      <p className="info-block">
+        <span className="label">Email (private):</span>
+        <span className="value">{emailDetails?.ccEmail}</span>
       </p>
 
       <div className="info-block">
@@ -194,7 +193,7 @@ export default function Home() {
       </button>
       {isGeneratingProof && (
         <p className="info-message">
-          Proof is being generated. This will take about one minute...
+          Proof is being generated. This will take about a minute...
         </p>
       )}
     </section>
@@ -249,7 +248,7 @@ export default function Home() {
       </Head>
       <div className="sections">
         {renderEmailDropSection()}
-        {emailDetails?.prUrl && renderDetailsSection()}
+        {emailDetails?.repoName && renderDetailsSection()}
         {proof && renderProofSection()}
       </div>
     </>
