@@ -47,7 +47,7 @@ export default async function handler(
 
     // Check if nullifier has been used before
     if (usedNullifiers.has(nullifier)) {
-      return res.status(400).json({ success: false, message: 'Airdrop already claimed' });
+      return res.status(400).json({ success: false, message: 'User already claimed the airdrop (nullifier found)' });
     }
 
     // Store the nullifier
