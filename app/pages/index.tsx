@@ -122,7 +122,7 @@ export default function Home() {
       </p>
       <p>
         To get started, upload a PR merge notification email that Github sends
-        to you. You can download emails as .eml files from most email clients {" "}
+        to you. You can download emails as .eml files from most email clients{" "}
         <a
           href="https://support.google.com/mail/answer/9261412"
           target="_blank"
@@ -171,7 +171,6 @@ export default function Home() {
           className="value section-input"
           id="walletAddress"
           value={walletAddress}
-          disabled={isGeneratingProof || !walletAddress || !!(proof && publicInputs)}
           onChange={(e) => setWalletAddress(e.target.value)}
           maxLength={42}
           placeholder="Enter your wallet address"
@@ -181,7 +180,7 @@ export default function Home() {
       <button
         className={`section-button ${isGeneratingProof ? "generating" : ""}`}
         onClick={onGenerateProofClick}
-        disabled={isGeneratingProof || !walletAddress || !!(proof && publicInputs)}
+        disabled={isGeneratingProof || !walletAddress}
       >
         {isGeneratingProof ? (
           <>
@@ -231,7 +230,7 @@ export default function Home() {
       </div>
 
       <button
-        disabled={!!claimStatus && !(claimStatus?.includes("Failed") || claimStatus?.includes("error"))}
+        disabled={!(claimStatus?.includes("Failed") || claimStatus?.includes("error"))}
         className="section-button"
         onClick={onClaimDiscount}
       >
